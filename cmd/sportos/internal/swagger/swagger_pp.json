@@ -1,0 +1,309 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "This API is contacted by the Payment Provider web hooks.",
+    "title": "TRI Pay Payment Provider API",
+    "license": {
+      "name": "Fincore proprietary licence",
+      "url": "http://fincore.com"
+    },
+    "version": "1"
+  },
+  "basePath": "/sportos/pp/v1/",
+  "paths": {
+    "/webhooks/{pp}": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Payment Providers API"
+        ],
+        "summary": "Webhook Controller for Payment Provider actions",
+        "operationId": "WebhookController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Payment Provider identification",
+            "name": "pp",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Payment provider data",
+            "name": "webhooksPostRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WebhooksPostRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PaymentRequest"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "APIError": {
+      "description": "Struct that is returned by API in case of error. Could be empty - all fields are optional",
+      "type": "object",
+      "title": "APIError",
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/PredefinedBusinessError"
+        },
+        "errors": {
+          "description": "Errors can hold nested APIError",
+          "type": "object"
+        },
+        "message": {
+          "description": "Human friendly message",
+          "type": "string"
+        },
+        "mnemonic": {
+          "type": "string"
+        },
+        "number": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payload": {
+          "description": "Could contain any object of any type",
+          "type": "object"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "Decimal": {
+      "description": "number = value * 10 ^ exp",
+      "type": "object",
+      "title": "Decimal represents a fixed-point decimal. It is immutable."
+    },
+    "HateoasLink": {
+      "description": "HateoasLink:",
+      "type": "object",
+      "title": "HateoasLink",
+      "properties": {
+        "href": {
+          "description": "URL to the action",
+          "type": "string"
+        },
+        "method": {
+          "description": "HTTP method that should be used (GET, POST, PUT…)",
+          "type": "string"
+        },
+        "rel": {
+          "$ref": "#/definitions/HateoasRel"
+        }
+      }
+    },
+    "HateoasLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/HateoasLink"
+      }
+    },
+    "HateoasRel": {
+      "description": "what type of action it is. Possible values:\n`approve` - payment request approval link at payment provider\n`self` - data about the payment request\n`resume` - resume of the payment request action\n`cancel` - cancel the payment request action\n`verify` - manual verification of the payment request\n`query` - query payment requests action",
+      "type": "string",
+      "title": "HateoasRel"
+    },
+    "Instruction": {
+      "description": "Instruction explaining frontend what it should do",
+      "type": "object",
+      "title": "Instruction",
+      "properties": {
+        "description": {
+          "description": "description of what is the instruction for",
+          "type": "string"
+        },
+        "help": {
+          "description": "helpful link",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/definitions/UntypedConfig"
+        },
+        "rel": {
+          "description": "instruction key",
+          "type": "string"
+        }
+      }
+    },
+    "Instructions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Instruction"
+      }
+    },
+    "PaymentMethod": {
+      "description": "TRI Pay available methods\n`PAYPAL` - PayPal\n`BANK_CARD` - Bank Card\n`DUMMY` - Simple dummy payment method for testing purposes",
+      "type": "string"
+    },
+    "PaymentRequest": {
+      "description": "Payment Request data subset for players:",
+      "type": "object",
+      "title": "PaymentRequest",
+      "properties": {
+        "PaymentMethodName": {
+          "description": "Payment method name",
+          "type": "string"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "instructions": {
+          "$ref": "#/definitions/Instructions"
+        },
+        "links": {
+          "$ref": "#/definitions/HateoasLinks"
+        },
+        "paymentInstrumentId": {
+          "description": "TRI Pay payment instrument ID used in request",
+          "type": "string"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/PaymentMethod"
+        },
+        "paymentRequestId": {
+          "description": "id in TRI Pay database",
+          "type": "string"
+        },
+        "ppAmount": {
+          "$ref": "#/definitions/Decimal"
+        },
+        "ppCurrency": {
+          "description": "ISO code for the currency as it will be used at payment provider",
+          "type": "string"
+        },
+        "requestType": {
+          "$ref": "#/definitions/PaymentRequestType"
+        },
+        "requestTypeName": {
+          "description": "Name of request type",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PaymentRequestStatusExternal"
+        },
+        "statusName": {
+          "description": "Name of status",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        },
+        "wAmount": {
+          "$ref": "#/definitions/Decimal"
+        },
+        "wCurrency": {
+          "description": "ISO code for the player wallet default currency",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRequestStatusExternal": {
+      "description": "Payment requests external statuses that players may see. Possible values:\n`WAITING_FOR_APPROVAL`\n`PROCESSING`\n`COMPLETE`\n`DENIED`",
+      "type": "string",
+      "title": "PaymentRequestStatusExternal"
+    },
+    "PaymentRequestType": {
+      "description": "TRI Pay payment request types. Possible values:\n`DEPOSIT` - End user deposits funds\n`WITHDRAWAL` - End user withdraws the funds",
+      "type": "string",
+      "title": "PaymentRequestType"
+    },
+    "PredefinedBusinessError": {
+      "description": "Predefined errors returned by business package. Possible error messages:\n'payment_request_status_change_forbiden_action' - payment request is in wrong status and status change is forbidden\n'payment_provider_no_record_of_approval' - payment request is not approved by player\n'payment_provider_place_order_error' - error when placing order (wrong start status or payment provider response status)\n'payment_provider_capture_funds_error' - error when capturing order (wrong payment provider response status)\n'payment_provider_authorize_funds_error' - error when authorizing order (wrong payment provider response status)\n'payment_provider_withdraw_funds_error' - withdrawal balance check failed\n'not_for_approval' - payment request not in READY_FOR_APPROVAL status when approving\n'payment_provider_unexpected_error' - unexpected response from payment provider\n'payment_provider_error' - error response from payment provider\n'mandatory_field_missing' - missing mandatory field in payment instrument values\n'payment_request_resume_not_possible' - wrong status or error in resume\n'payment_request_cancel_not_possible' - wrong status or error in cancel\n'payment_request_resume_forbidden' - player attempting to resume other players payment request\n'forbidden_value' - non existing enum sent from frontend\n'route_missing' - no route with active partner payment provider profile\n'route_instrument_mismatch' - payment route and payment instrument have payment instrument template id mismatch\n'disabled_payment_instrument' - disabled payment instrument detected\n'player_mismatch' - payment instrument player and player from context are not the same\n'limits_mismatch' - amount does not adhere to limits\n'limit_config_mismatch' - amount in config does not adhere to limits\n'unique_constraint' - entity may not be created due to its unique constraints\n'fraud_exception' - possible fraud exception\n'pam_initiate_exception' - exception during PAM initiate request\n'confirm_exception' - exception during PAM request confirmation method\n'failure_exception' - exception during PAM request failure method\n'sensitive_data_detected' - sensitive data passed with payment instrument\n'request_status_not_empty' - request status not empty\n'single_use_token_missing' - single use token missing when external vault is used\n'external_vault_expected' - external vault expected to be used\n'payment_request_verify_not_possible' - wrong status or error in verify\n'schedule_cancel_not_possible' - wrong status or error in cancel\n'bad_request_parametars' - wrong parametars received from body or URI",
+      "type": "string",
+      "title": "PredefinedBusinessError"
+    },
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "UntypedConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "WebhooksPostRequest": {
+      "description": "WebhooksPostRequest:",
+      "type": "object",
+      "title": "WebhooksPostRequest",
+      "properties": {
+        "data": {
+          "description": "Payment provider data",
+          "type": "object"
+        }
+      }
+    }
+  }
+}

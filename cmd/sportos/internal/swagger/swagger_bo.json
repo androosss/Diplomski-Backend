@@ -1,0 +1,3925 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Features for Backoffice management and analysis of payment routes, payments requests, KPI reporting, etc. The API is unrestricted meaning authentication token is not needed. \"TRI Pay BO API\" should be used as middleware service by the Backoffice frontend.",
+    "title": "TRI Pay Backoffice Unrestricted API",
+    "license": {
+      "name": "Fincore proprietary licence",
+      "url": "http://fincore.com"
+    },
+    "version": "1"
+  },
+  "basePath": "/sportos/bo/v1/",
+  "paths": {
+    "/api-journals": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get api journals by parameters",
+        "operationId": "ApiJournalCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date.",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date.",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "max number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ApiJournal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/audits": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get audits by parameters",
+        "operationId": "AuditCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "name of database entity. Value is from enum SportosEntity",
+            "name": "entity",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "id of database entity. Entity is mandatory if entityId exists.",
+            "name": "entityId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Audit"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/partner-payment-provider-profiles": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get partner payment provider profiles by parameters",
+        "operationId": "PartnerPaymentProviderProfilesCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "payment provider that the profile is for",
+            "name": "paymentProvider",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "id of the partner at the payment provider",
+            "name": "merchantId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values from PaymentRoute. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PartnerPaymentProviderProfile"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new payment provider merchant profile for partner",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Create payment provider profile for partner",
+        "operationId": "PartnerPaymentProviderProfileCreate",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "profile that should be created for partner",
+            "name": "partnerPaymentProviderProfile",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PartnerPaymentProviderProfile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "$ref": "#/definitions/PartnerPaymentProviderProfile"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/partner-payment-provider-profiles/{id}": {
+      "patch": {
+        "description": "Update partner payment provider profile with merchantId, status and config",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Update Partner Payment Provider Profile request",
+        "operationId": "PartnerPaymentProviderProfileUpdateController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "Partner payment provider profile ID that is to be updated",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "if deletion of config parameters sent through the body is needed",
+            "name": "isDeleteConfigParams",
+            "in": "query"
+          },
+          {
+            "description": "Partner payment provider profile patch request",
+            "name": "Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PartnerPaymentProviderProfilePatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PartnerPaymentProviderProfile"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/partner/{id}": {
+      "patch": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Updates the partner config.",
+        "operationId": "PartnerUpdate",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay ID of partner that should be updated",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "if deletion of config parameters sent through the body is needed",
+            "name": "isDeleteConfigParams",
+            "in": "query"
+          },
+          {
+            "description": "Partner configuration",
+            "name": "config",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PartnerConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "$ref": "#/definitions/Partner"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/partners": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get partners by parameters",
+        "operationId": "PartnersCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay id of partner",
+            "name": "partner",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Full partner name",
+            "name": "partnerName",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Partner group",
+            "name": "partnerGroup",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay identificator for PAM that partner belongs to.",
+            "name": "pam",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values from PaymentRoute. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Partner"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-instruments": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get paymentinstruments by parameters",
+        "operationId": "PaymentInstrumentCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay player ID",
+            "name": "player",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay id of the payment instrument",
+            "name": "paymentInstrumentId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Name of the payment instrument as player set it or automatically given",
+            "name": "paymentInstrumentName",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "ID of the payment method",
+            "name": "paymentMethod",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Payment instrument expiration date before the date, inclusive.",
+            "name": "expirationdateBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date.",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date.",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "max number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentInstrument"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-instruments/{id}": {
+      "patch": {
+        "description": "Update payment instrument with status",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Update Payment Instrument request",
+        "operationId": "PaymentInstrumentUpdateController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "Payment instrument ID that is to be updated",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Payment instrument patch request",
+            "name": "Request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/PaymentInstrumentPatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PaymentInstrument"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-methods": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get payment methods by parameters",
+        "operationId": "PaymentMethodCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "ID of the payment method",
+            "name": "paymentMethod",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Used for the groupment of payment methods. They are predefined CARD, BANK_TRANSFER, OTHER.",
+            "name": "paymentClass",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values ACTIVE, DISABLED. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentMethodInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-providers": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get payment providers by parameters",
+        "operationId": "PaymentProviderCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "ID of the payment provider",
+            "name": "paymentProvider",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "name of the payment provider",
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values ACTIVE, DISABLED. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentProviderInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-providers/{id}": {
+      "patch": {
+        "description": "Update payment provider with status and config",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Update Payment Provider request",
+        "operationId": "PaymentProviderUpdateController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "Payment provider ID that is to be updated",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "if deletion of config parameters sent through the body is needed",
+            "name": "isDeleteConfigParams",
+            "in": "query"
+          },
+          {
+            "description": "Payment provider patch request",
+            "name": "Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentProviderPatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PaymentProviderInternal"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-request-journals": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get payment request journals by parameters",
+        "operationId": "PaymentRequestJournalsCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "id of the payment request that the journal is for",
+            "name": "paymentRequestId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "IP address of the client making the request",
+            "name": "sourceIP",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "id of the schedule that caused the journal record",
+            "name": "scheduleId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "id of the incoming API request that caused the journal record",
+            "name": "apiJournalId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending ppAmount and ascending status. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRequestJournal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-request-kpis": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get KPI list",
+        "operationId": "KPIsDescriptionCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/KPI"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      },
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get KPI list for partner and some additional search parameters (if there are no partners or no KPIs, do for all).",
+        "operationId": "KPIsCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "KPIs search parameters",
+            "name": "paymentRequestKPIsPostRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentRequestKPIsPostRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/KPI"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get payment requests by parameters",
+        "operationId": "PaymentRequestsCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "id of the payment request",
+            "name": "paymentRequestId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay player ID",
+            "name": "player",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values from PaymentRequestStatus. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "if request is in status that may be resumed",
+            "name": "isResumable",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "if request is in status that may be cancelled",
+            "name": "isCancellable",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "DEPOSIT, WITHDRAW",
+            "name": "requestType",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated ids of the payment methods",
+            "name": "paymentMethods",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated payment providers used in request",
+            "name": "paymentProviders",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay payment route ID",
+            "name": "paymentRouteId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay payment instrument ID used in request",
+            "name": "paymentInstrumentId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Partner payment provider profile used most recently in this payment request.",
+            "name": "partnerPaymentProviderProfileId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "updated starting from or after the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "updatedFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "update before the date. The format of the date is ‘YYYY-MM-DD’",
+            "name": "updatedBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "max number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending ppAmount and ascending status. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRequestInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests/cancel": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "PaymentRequest cancel flow",
+        "operationId": "PaymentRequestsCancelPostController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "Cancel parameters",
+            "name": "paymentRequestCancelPostRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentRequestCancelPostRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRequestInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests/resume": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "PaymentRequest resume flow",
+        "operationId": "PaymentRequestResumeController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "Payment request ids that should be resumed",
+            "name": "ids",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRequestInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests/verify": {
+      "post": {
+        "description": "Manual verification of payment requests",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "PaymentRequest verify flow",
+        "operationId": "PaymentRequestVerifyController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "Verify parametars",
+            "name": "Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentRequestVerifyPostRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRequestInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-routes": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get payment routes by parameters",
+        "operationId": "PaymentRouteInternalCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "DEPOSIT, WITHDRAW",
+            "name": "requestType",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values from PaymentRequestStatus. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending ppAmount and ascending status. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentRouteInternal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/payment-routes/{id}": {
+      "patch": {
+        "description": "Update payment route with status, config and priority",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Update Payment Route request",
+        "operationId": "PaymentRouteUpdateController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "Payment route ID that is to be updated",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "if deletion of config parameters sent through the body is needed",
+            "name": "isDeleteConfigParams",
+            "in": "query"
+          },
+          {
+            "description": "Payment route patch request",
+            "name": "Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentRoutePatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/PaymentRouteInternal"
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/players": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get players by parameters",
+        "operationId": "PlayersCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "TRI Pay id of player",
+            "name": "player",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Player"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/schedule-journals": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get schedule journals by parameters",
+        "operationId": "ScheduleJournalCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "id of the schedule",
+            "name": "scheduleId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date.",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date.",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "max number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ScheduleJournal"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Get schedules by parameters",
+        "operationId": "ScheduleCollection",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "type": "string",
+            "description": "the id of payment request the schedule is made for",
+            "name": "paymentRequestId",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "comma separated array of status values. Comma separated is used since the query parameter is used.",
+            "name": "statuses",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created starting from or after the date.",
+            "name": "createdFrom",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "created before the date.",
+            "name": "createdBefore",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "how many results should be skipped.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "max number of results to return. Default is 20.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Allow ascending and descending sorting over multiple fields. Example '+status,-ppAmount'. This returns a list sorted by descending manufacturers and ascending models. Default sort should be -createdAt.",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Schedule"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    },
+    "/schedules/cancel": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Schedule cancel flow",
+        "operationId": "SchedulesCancelPostController",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Unique request ID",
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Id of backoffice user",
+            "name": "User-Id",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Comma separated partners that backoffice user has permissions for. If this header is empty user has permissions for all partners.",
+            "name": "Partners",
+            "in": "header"
+          },
+          {
+            "description": "Cancel parameters",
+            "name": "scheduleCancelPostRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScheduleCancelPostRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Schedule"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request supplied",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "403": {
+            "description": "Request is forbidden",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "404": {
+            "description": "Predefined error occured",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "405": {
+            "description": "Method not allowed error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "409": {
+            "description": "Conflict error, payment provider error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/APIError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "APIError": {
+      "description": "Struct that is returned by API in case of error. Could be empty - all fields are optional",
+      "type": "object",
+      "title": "APIError",
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/PredefinedBusinessError"
+        },
+        "errors": {
+          "description": "Errors can hold nested APIError",
+          "type": "object"
+        },
+        "message": {
+          "description": "Human friendly message",
+          "type": "string"
+        },
+        "mnemonic": {
+          "type": "string"
+        },
+        "number": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payload": {
+          "description": "Could contain any object of any type",
+          "type": "object"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "Analytic": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "partner": {
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/Decimal"
+        }
+      }
+    },
+    "ApiJournal": {
+      "description": "API Journal records all the calls to TRI Pay API",
+      "type": "object",
+      "title": "ApiJournal",
+      "properties": {
+        "apiJournalId": {
+          "description": "API Journal ID",
+          "type": "string"
+        },
+        "createdAt": {
+          "description": "date and time the journal was created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "request": {
+          "description": "Full HTTP request that was received",
+          "type": "string"
+        },
+        "response": {
+          "description": "Full HTTP response that was replied by TRI Pay",
+          "type": "string"
+        },
+        "sourceIP": {
+          "description": "Caller IP address",
+          "type": "string"
+        }
+      }
+    },
+    "Audit": {
+      "description": "Audit:",
+      "type": "object",
+      "title": "Audit",
+      "properties": {
+        "Id": {
+          "description": "Audit unique id",
+          "type": "string"
+        },
+        "createdAt": {
+          "description": "Date when audit was created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "description": "User who created audit",
+          "type": "string"
+        },
+        "crudAction": {
+          "$ref": "#/definitions/CrudAction"
+        },
+        "entity": {
+          "$ref": "#/definitions/SportosEntity"
+        },
+        "entityId": {
+          "description": "Id of entity that is changed",
+          "type": "string"
+        },
+        "entityName": {
+          "description": "Name of database table",
+          "type": "string"
+        },
+        "new": {
+          "description": "New value of changed fields",
+          "type": "object"
+        },
+        "old": {
+          "description": "Old value of changed fields",
+          "type": "object"
+        },
+        "sourceIp": {
+          "description": "Source ip form where request was send",
+          "type": "string"
+        }
+      }
+    },
+    "AuthData": {
+      "description": "Authentication data",
+      "type": "object",
+      "title": "AuthData",
+      "properties": {
+        "basic": {
+          "$ref": "#/definitions/BasicAuth"
+        },
+        "token": {
+          "description": "base64 access token",
+          "type": "string"
+        }
+      }
+    },
+    "BasicAuth": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "CrudAction": {
+      "description": "Crud action. Possible values:\n`CREATE`\n`UPDATE`\n`DELETE`",
+      "type": "string",
+      "title": "CrudAction"
+    },
+    "CurrencyConfig": {
+      "description": "Configuration for currency:",
+      "type": "object",
+      "title": "CurrencyConfig",
+      "properties": {
+        "currency": {
+          "description": "ISO code",
+          "type": "string"
+        },
+        "isDefault": {
+          "description": "whether the currency is default for the entity that the config is for",
+          "type": "boolean"
+        },
+        "limits": {
+          "description": "Limits for the currency on the amounts and number of transactions.",
+          "type": "object",
+          "properties": {
+            "daily": {
+              "$ref": "#/definitions/CurrencyLimitInternal"
+            },
+            "monthly": {
+              "$ref": "#/definitions/CurrencyLimitInternal"
+            },
+            "note": {
+              "description": "back office user can enter a note when editing limits",
+              "type": "string"
+            },
+            "transactional": {
+              "$ref": "#/definitions/CurrencyLimitInternal"
+            },
+            "weekly": {
+              "$ref": "#/definitions/CurrencyLimitInternal"
+            }
+          }
+        },
+        "requestType": {
+          "$ref": "#/definitions/PaymentRequestType"
+        }
+      }
+    },
+    "CurrencyLimitInternal": {
+      "description": "Currency limits for internal use:",
+      "type": "object",
+      "title": "CurrencyLimitInternal",
+      "properties": {
+        "enabled": {
+          "description": "whether or not the limit is enabled",
+          "type": "boolean"
+        },
+        "maxAmount": {
+          "description": "maximum limit for the amount",
+          "type": "string"
+        },
+        "minAmount": {
+          "description": "minimum limit for the amount",
+          "type": "string"
+        },
+        "transaction": {
+          "description": "limits on number of transactions. Unlimited if omitted.",
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Decimal": {
+      "description": "number = value * 10 ^ exp",
+      "type": "object",
+      "title": "Decimal represents a fixed-point decimal. It is immutable."
+    },
+    "HateoasLink": {
+      "description": "HateoasLink:",
+      "type": "object",
+      "title": "HateoasLink",
+      "properties": {
+        "href": {
+          "description": "URL to the action",
+          "type": "string"
+        },
+        "method": {
+          "description": "HTTP method that should be used (GET, POST, PUT…)",
+          "type": "string"
+        },
+        "rel": {
+          "$ref": "#/definitions/HateoasRel"
+        }
+      }
+    },
+    "HateoasRel": {
+      "description": "what type of action it is. Possible values:\n`approve` - payment request approval link at payment provider\n`self` - data about the payment request\n`resume` - resume of the payment request action\n`cancel` - cancel the payment request action\n`verify` - manual verification of the payment request\n`query` - query payment requests action",
+      "type": "string",
+      "title": "HateoasRel"
+    },
+    "KPI": {
+      "description": "KPI:",
+      "type": "object",
+      "title": "KPI",
+      "properties": {
+        "analytics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Analytic"
+          }
+        },
+        "count": {
+          "description": "count of payment requests that correspond to filter (kpi)",
+          "type": "integer",
+          "format": "int64"
+        },
+        "currency": {
+          "description": "currency that value is in",
+          "type": "string"
+        },
+        "description": {
+          "description": "KPI description",
+          "type": "string"
+        },
+        "kpi": {
+          "description": "KPI key",
+          "type": "string"
+        },
+        "links": {
+          "description": "KPI HATEOAS link, with href that uses search parameters in query for current KPI search",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HateoasLink"
+          }
+        },
+        "name": {
+          "description": "KPI name",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/Decimal"
+        }
+      }
+    },
+    "ManualCancellation": {
+      "description": "Informations about reason for cancelling payment request",
+      "type": "object",
+      "title": "ManualCancellation",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "ManualVerification": {
+      "description": "Informations about reason for verifying payment request",
+      "type": "object",
+      "title": "ManualVerification",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "result": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Notes": {
+      "description": "Additional information about payment request",
+      "type": "object",
+      "title": "Notes",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "note": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "PPMethodStatus": {
+      "type": "string"
+    },
+    "Partner": {
+      "description": "Partner data:",
+      "type": "object",
+      "title": "Partner",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PartnerConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "pam": {
+          "description": "TRI Pay identificator for PAM that partner belongs to.",
+          "type": "string"
+        },
+        "partner": {
+          "description": "TRI Pay partner ID",
+          "type": "string"
+        },
+        "partnerGroup": {
+          "description": "Partner group",
+          "type": "string"
+        },
+        "partnerName": {
+          "description": "Full partner name",
+          "type": "string"
+        },
+        "status": {
+          "description": "comma separated array of status values from PaymentRoute. Comma separated is used since the query parameter is used.",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PartnerConfig": {
+      "description": "Partner Config:",
+      "type": "object",
+      "title": "PartnerConfig",
+      "properties": {
+        "currencies": {
+          "description": "data about what currencies that are allowed and their limits that will be applied to the partner",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CurrencyConfig"
+          }
+        },
+        "riskRules": {
+          "description": "risk rules for partner",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RiskRule"
+          }
+        }
+      }
+    },
+    "PartnerPaymentProviderProfile": {
+      "description": "Payment Provider merchant profile that the partner is using",
+      "type": "object",
+      "title": "PartnerPaymentProviderProfile",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PartnerPaymentProviderProfileConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "merchantId": {
+          "description": "id of the partner at the payment provider",
+          "type": "string"
+        },
+        "partner": {
+          "description": "TRI Pay id of the partner",
+          "type": "string"
+        },
+        "partnerPaymentProviderProfileId": {
+          "description": "TRI Pay unique ID for the partner payment provider profile",
+          "type": "string"
+        },
+        "paymentProvider": {
+          "description": "payment provider that the profile is for",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PartnerPaymentProviderProfileConfig": {
+      "description": "Configuration for the Payment Provider merchant profile that the partner is using",
+      "type": "object",
+      "title": "PartnerPaymentProviderProfileConfig",
+      "properties": {
+        "authentications": {
+          "description": "parameters used for authenticating the access to certain endpoints. Used by POST only. GET endpoints will not return this value since the data is sensitive",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "auth": {
+                "$ref": "#/definitions/AuthData"
+              },
+              "endpoints": {
+                "description": "One or more payment provider endpoints",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/PaymentProviderEndpoint"
+                }
+              }
+            }
+          }
+        },
+        "currencies": {
+          "description": "data about what currencies are allowed and their limits that will be applied to the partner’s payment provider profile",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CurrencyConfig"
+          }
+        }
+      }
+    },
+    "PartnerPaymentProviderProfilePatchRequest": {
+      "description": "PartnerPaymentProviderProfilePatchRequest:",
+      "type": "object",
+      "title": "PartnerPaymentProviderProfilePatchRequest",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PartnerPaymentProviderProfileConfig"
+        },
+        "merchantId": {
+          "description": "id of the partner at the payment provider",
+          "type": "string"
+        },
+        "status": {
+          "description": "new status of the profile: ACTIVE, DISABLED",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentInstrument": {
+      "description": "Payment Instrument data",
+      "type": "object",
+      "title": "PaymentInstrument",
+      "properties": {
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "paymentInstrumentId": {
+          "description": "id in TRI Pay database",
+          "type": "string"
+        },
+        "paymentInstrumentName": {
+          "description": "Player or automatically defined payment instrument name.",
+          "type": "string"
+        },
+        "paymentInstrumentTemplateId": {
+          "description": "id of template used for presenting content of the form on the frontend",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PaymentInstrumentStatus"
+        },
+        "statusName": {
+          "description": "Status name",
+          "type": "string"
+        },
+        "values": {
+          "description": "map of fields and values to be dynamically populated on frontend",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "PaymentInstrumentPatchRequest": {
+      "description": "PaymentInstrumentPatchRequest:",
+      "type": "object",
+      "title": "PaymentInstrumentPatchRequest",
+      "properties": {
+        "Status": {
+          "description": "status: new status of the payment instrument: ACTIVE (visible by the player), TEMPORARY (used but not visible by the player), DISABLED (not usable)",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentInstrumentStatus": {
+      "description": "Partner fraud provider profile status. Possible values:\n`ACTIVE` - active payment instrument\n`TEMPORARY` - payment instrument is used for one transactions and shouldn't be saved\n`DISABLED` - disabled payment instrument",
+      "type": "string",
+      "title": "PaymentInstrumentStatus"
+    },
+    "PaymentMethod": {
+      "description": "TRI Pay available methods\n`PAYPAL` - PayPal\n`BANK_CARD` - Bank Card\n`DUMMY` - Simple dummy payment method for testing purposes",
+      "type": "string"
+    },
+    "PaymentMethodClass": {
+      "type": "string"
+    },
+    "PaymentMethodConfig": {
+      "description": "Config for the payment method:",
+      "type": "object",
+      "title": "PaymentMethodConfig",
+      "properties": {
+        "imageUrl": {
+          "description": "reference to the image that may be used by the frontend in order to represent the payment method",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentMethodInternal": {
+      "description": "Payment method data:",
+      "type": "object",
+      "title": "PaymentMethodInternal",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PaymentMethodConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "order": {
+          "description": "internal order of the method that should be used when presenting the methods to the players",
+          "type": "integer",
+          "format": "int64"
+        },
+        "paymentMethod": {
+          "description": "ID of the payment method",
+          "type": "string"
+        },
+        "paymentMethodClass": {
+          "$ref": "#/definitions/PaymentMethodClass"
+        },
+        "paymentMethodName": {
+          "description": "Name of payment method",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PPMethodStatus"
+        },
+        "statusName": {
+          "description": "Status name",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PaymentProviderConfig": {
+      "description": "Configuration for the payment provider",
+      "type": "object",
+      "title": "PaymentProviderConfig",
+      "properties": {
+        "connections": {
+          "description": "payment provider API endpoints:",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "endpoints": {
+                "description": "One or more payment provider endpoints",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/PaymentProviderEndpoint"
+                }
+              },
+              "url": {
+                "description": "URL for the endpoints",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "currencies": {
+          "description": "data about what currencies are allowed and their limits that will be applied to the payment provider",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CurrencyConfig"
+          }
+        }
+      }
+    },
+    "PaymentProviderEndpoint": {
+      "description": "Payment Provider endpoints that may be accessed by the TRI Pay",
+      "type": "string",
+      "title": "PaymentProviderEndpoint"
+    },
+    "PaymentProviderId": {
+      "type": "string"
+    },
+    "PaymentProviderInternal": {
+      "description": "Payment Provider internal usage data",
+      "type": "object",
+      "title": "PaymentProviderInternal",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PaymentProviderConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "paymentProvider": {
+          "$ref": "#/definitions/PaymentProviderId"
+        },
+        "paymentProviderDescription": {
+          "description": "Name of the payment provider",
+          "type": "string"
+        },
+        "paymentProviderName": {
+          "description": "Name of the payment provider",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PaymentProviderStatus"
+        },
+        "statusName": {
+          "description": "Status name",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PaymentProviderPatchRequest": {
+      "description": "PaymentProviderPatchRequest:",
+      "type": "object",
+      "title": "PaymentProviderPatchRequest",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PaymentProviderConfig"
+        },
+        "status": {
+          "description": "new status: ACTIVE, DISABLED",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentProviderStatus": {
+      "type": "string"
+    },
+    "PaymentRequestCancelPostRequest": {
+      "description": "PaymentRequestCancelPostRequest:",
+      "type": "object",
+      "title": "PaymentRequestCancelPostRequest",
+      "properties": {
+        "ids": {
+          "description": "payment request ids that should be cancelled",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "description": "Cancel reason. It is mandatory.",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRequestInternal": {
+      "description": "Payment Request data subset for back office users:",
+      "type": "object",
+      "title": "PaymentRequestInternal",
+      "properties": {
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "externalPaymentRequestId": {
+          "description": "External payment provider transaction id",
+          "type": "string"
+        },
+        "isCancellable": {
+          "description": "if request is in status that may be cancelled",
+          "type": "boolean"
+        },
+        "isResumable": {
+          "description": "if request is in status that may be resumed",
+          "type": "boolean"
+        },
+        "links": {
+          "description": "array of possible further actions which can be performed on payment request",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HateoasLink"
+          }
+        },
+        "manualCancellation": {
+          "$ref": "#/definitions/ManualCancellation"
+        },
+        "manualVerification": {
+          "$ref": "#/definitions/ManualVerification"
+        },
+        "notes": {
+          "description": "payment request notes that operators left",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Notes"
+          }
+        },
+        "pPAmount": {
+          "description": "deposit amount in funded currency",
+          "type": "string"
+        },
+        "pPCurrency": {
+          "description": "ISO code for the currency as it will be used at payment provider",
+          "type": "string"
+        },
+        "partner": {
+          "description": "TRI Pay partner unique identificator",
+          "type": "string"
+        },
+        "partnerPaymentProviderProfileId": {
+          "description": "Partner payment provider profile used most recently in this payment request",
+          "type": "string"
+        },
+        "paymentInstrument": {
+          "$ref": "#/definitions/PaymentInstrument"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/PaymentMethod"
+        },
+        "paymentMethodName": {
+          "description": "payment method name",
+          "type": "string"
+        },
+        "paymentProvider": {
+          "$ref": "#/definitions/PaymentProviderId"
+        },
+        "paymentProviderName": {
+          "description": "payment provider name",
+          "type": "string"
+        },
+        "paymentRequestId": {
+          "description": "id in TRI Pay database",
+          "type": "string"
+        },
+        "paymentRouteId": {
+          "description": "TRI Pay payment route ID",
+          "type": "string"
+        },
+        "playerFirstName": {
+          "description": "player first name from PAM",
+          "type": "string"
+        },
+        "playerId": {
+          "description": "TRI Pay player unique identificator",
+          "type": "string"
+        },
+        "playerLastName": {
+          "description": "player last name from PAM",
+          "type": "string"
+        },
+        "requestType": {
+          "$ref": "#/definitions/PaymentRequestType"
+        },
+        "requestTypeName": {
+          "description": "Request type name",
+          "type": "string"
+        },
+        "risks": {
+          "description": "array of all the risks for the payment request",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RiskInfo"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/PaymentRequestStatusInternal"
+        },
+        "statusName": {
+          "description": "Name of status",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        },
+        "wAmount": {
+          "description": "deposit amount in player wallet default currency",
+          "type": "string"
+        },
+        "wCurrency": {
+          "description": "ISO code for the player wallet default currency",
+          "type": "string"
+        },
+        "walletPaymentRequestId": {
+          "description": "payment request ID from wallet",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRequestJournal": {
+      "description": "Payment Request Journal data. Journal is taken every time payment request status is being changed or when third party APIs are called by TRI Pay. Some data from the payment request is copied to the journal.",
+      "type": "object",
+      "title": "PaymentRequestJournal",
+      "properties": {
+        "action": {
+          "description": "TRI Pay business flow action that was current at the journal snapshot moment",
+          "type": "string"
+        },
+        "apiJournalId": {
+          "description": "ID of the incoming API request that caused the journal record",
+          "type": "string"
+        },
+        "createdAt": {
+          "description": "date and time the journal was created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "externalPaymentRequestId": {
+          "description": "Id of payment request in payment provider",
+          "type": "string"
+        },
+        "httpReqType": {
+          "description": "http request type",
+          "type": "string"
+        },
+        "pPAmount": {
+          "description": "deposit amount in funded currency taken from payment request",
+          "type": "string"
+        },
+        "pPCurrency": {
+          "description": "ISO code for the currency as it will be used at payment provider taken from payment request",
+          "type": "string"
+        },
+        "partnerPaymentProviderProfileId": {
+          "description": "partner’s payment provider profile ID that was used when the journal was recorded",
+          "type": "string"
+        },
+        "paymentInstrument": {
+          "$ref": "#/definitions/PaymentInstrument"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/PaymentMethod"
+        },
+        "paymentRequestId": {
+          "description": "payment request ID",
+          "type": "string"
+        },
+        "paymentRequestJournalId": {
+          "description": "journal ID",
+          "type": "string"
+        },
+        "paymentRequestStatus": {
+          "$ref": "#/definitions/PaymentRequestStatusInternal"
+        },
+        "request": {
+          "description": "Full HTTP request in case the journal was recorded as part of third party API call",
+          "type": "string"
+        },
+        "responses": {
+          "description": "Full HTTP response in case the journal was recorded as part of third party API call",
+          "type": "string"
+        },
+        "scheduleId": {
+          "description": "ID of the schedule that caused the journal record",
+          "type": "string"
+        },
+        "sourceIP": {
+          "description": "Ip address of the client making the request",
+          "type": "string"
+        },
+        "status": {
+          "description": "TRI Pay status of payment request",
+          "type": "string"
+        },
+        "wAmount": {
+          "description": "deposit amount in player wallet default currency taken from payment request",
+          "type": "string"
+        },
+        "wCurrency": {
+          "description": "ISO code for the player wallet default currency taken from payment request",
+          "type": "string"
+        },
+        "walletPaymentRequestId": {
+          "description": "payment request ID from wallet",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRequestKPIsPostRequest": {
+      "description": "PaymentRequestKPIsPostRequest:",
+      "type": "object",
+      "title": "PaymentRequestKPIsPostRequest",
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "dateBefore": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateFrom": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kpis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PaymentRequestStatusInternal": {
+      "description": "Depending on its type, payment request may have different statuses.\n\n\nDeposit statuses:\n`CREATED` - Deposit request is initiated\n`PROCESSING_PAYMENT_INSTRUMENT` - Payment instrument data is beeing processed\n`DENIED` - Order has been cancelled in payment provider system\n`AWAITING_WALLET_AUTHORIZATION` - Order has been sent to PAM system and payment request is waiting for PAM approval\n`AWAITING_FRAUD_CHECK` - Order has been sent to fraud check system and payment request is waiting for fraud check approval\n`AWAITING_DENIAL` - Order is to be denied in PAM system, awaitin PAM response\n`PENDING_MANUAL_VERIFICATION` - Order has to be verified manually in backoffice app by moderator\n`SENT_TO_PAYMENT_PROVIDER` - Order has been placed in payment provider system\n`READY_FOR_APPROVAL` - Order has been placed in payment provider system and is ready for redirect to approval page\n`VERIFIED` - Order has been verified manually in backoffice app by moderator\n`APPROVED` - Payment request has been approved by the end user\n`CAPTURED` - Funds have been captured by TRI Pay merchant\n`COMPLETE` - Payment request is complete from the payment provider point of view\n\nWithdraw statuses:\n`CREATED` - Withdraw request is initiated\n`PROCESSING_PAYMENT_INSTRUMENT` - Payment instrument data is beeing processed\n`DENIED` - Withdraw request has been denied\n`AWAITING_WALLET_AUTHORIZATION` - Order has been sent to PAM system and payment request is waiting for PAM approval\n`AWAITING_FRAUD_CHECK` - Order has been sent to fraud check system and payment request is waiting for fraud check approval\n`AWAITING_DENIAL` - Order is to be denied in PAM system, awaitin PAM response\n`PENDING_MANUAL_VERIFICATION` - Order has to be verified manually in backoffice app by moderator\n`SENT_TO_PAYMENT_PROVIDER` - Withdraw funds have been sent to the payment provider\n`READY_FOR_APPROVAL` - Order has been placed in payment provider system and is ready for redirect to approval page\n`VERIFIED` - Withdraw has been verified manually in backoffice app by moderator\n`APPROVED` - Withdraw request has been approved by TRI Pay merchant\n`COMPLETE` - Payment request is complete from the payment provider point of view",
+      "type": "string",
+      "title": "PaymentRequestStatusInternal"
+    },
+    "PaymentRequestType": {
+      "description": "TRI Pay payment request types. Possible values:\n`DEPOSIT` - End user deposits funds\n`WITHDRAWAL` - End user withdraws the funds",
+      "type": "string",
+      "title": "PaymentRequestType"
+    },
+    "PaymentRequestVerifyPostRequest": {
+      "description": "PaymentRequestVerifyPostRequest:",
+      "type": "object",
+      "title": "PaymentRequestVerifyPostRequest",
+      "properties": {
+        "ids": {
+          "description": "payment requests id that should be verified",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isVerified": {
+          "description": "refers to the payment requests in status PENDING MANUAL VERIFICATION. If set to true, the payment request will be resumed. If set to false, the payment request will be denied.",
+          "type": "boolean"
+        },
+        "reason": {
+          "description": "In case of denial we need a reason. It is mandatory if denial occurs",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRouteConfig": {
+      "description": "Payment Route Config:",
+      "type": "object",
+      "title": "PaymentRouteConfig",
+      "properties": {
+        "currencies": {
+          "description": "data about currencies that are allowed and their limits that will be applied to the route",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CurrencyConfig"
+          }
+        }
+      }
+    },
+    "PaymentRouteInternal": {
+      "description": "Payment Instrument Route data for internal usage:",
+      "type": "object",
+      "title": "PaymentRouteInternal",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PaymentRouteConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "partner": {
+          "description": "TRI Pay partner unique identificator",
+          "type": "string"
+        },
+        "paymentInstrumentTemplateId": {
+          "description": "id of template used for presenting content of the form on the frontend. If omitted, the payment instrument form is needless for the route",
+          "type": "string"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/PaymentMethod"
+        },
+        "paymentMethodName": {
+          "description": "name of payment method",
+          "type": "string"
+        },
+        "paymentProvider": {
+          "$ref": "#/definitions/PaymentProviderId"
+        },
+        "paymentProviderName": {
+          "description": "name of payment provider",
+          "type": "string"
+        },
+        "paymentRouteId": {
+          "description": "TRI Pay payment route ID",
+          "type": "string"
+        },
+        "priority": {
+          "description": "Priority of the route that is consulted when a decision about which route should be used is made. Higher the value, the more likely it will be chosen",
+          "type": "integer",
+          "format": "int64"
+        },
+        "requestType": {
+          "$ref": "#/definitions/PaymentRequestType"
+        },
+        "requestTypeName": {
+          "description": "Request type name",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PaymentRouteStatus"
+        },
+        "statusName": {
+          "description": "name of status",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PaymentRoutePatchRequest": {
+      "description": "PaymentRoutesPatchRequest:",
+      "type": "object",
+      "title": "PaymentRoutesPatchRequest",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PaymentRouteConfig"
+        },
+        "priority": {
+          "description": "new priority of the route. Higher the more likely the route will be chosen.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "status": {
+          "description": "new status of the payment route: ACTIVE, DISABLED",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentRouteStatus": {
+      "description": "Payment route status. Possible values:\n`ACTIVE`\n`DISABLED`",
+      "type": "string",
+      "title": "PaymentRouteStatus"
+    },
+    "Player": {
+      "description": "Player:",
+      "type": "object",
+      "title": "Player",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/PlayerConfig"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "externalPlayerId": {
+          "description": "Unique player identifier in external IAM system, such as PAM.",
+          "type": "string"
+        },
+        "partner": {
+          "description": "Partner that the player plays through.",
+          "type": "string"
+        },
+        "player": {
+          "description": "TRI Pay player ID",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/PlayerStatus"
+        },
+        "statusName": {
+          "description": "Player status name",
+          "type": "string"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PlayerConfig": {
+      "description": "Player Config:",
+      "type": "object",
+      "title": "PlayerConfig",
+      "properties": {
+        "currencies": {
+          "description": "data about what currencies are allowed and their limits that will be applied to the player",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CurrencyConfig"
+          }
+        }
+      }
+    },
+    "PlayerStatus": {
+      "description": "Player status. Possible values:\n`ACTIVE`\n`DISABLED`",
+      "type": "string",
+      "title": "PlayerStatus"
+    },
+    "PredefinedBusinessError": {
+      "description": "Predefined errors returned by business package. Possible error messages:\n'payment_request_status_change_forbiden_action' - payment request is in wrong status and status change is forbidden\n'payment_provider_no_record_of_approval' - payment request is not approved by player\n'payment_provider_place_order_error' - error when placing order (wrong start status or payment provider response status)\n'payment_provider_capture_funds_error' - error when capturing order (wrong payment provider response status)\n'payment_provider_authorize_funds_error' - error when authorizing order (wrong payment provider response status)\n'payment_provider_withdraw_funds_error' - withdrawal balance check failed\n'not_for_approval' - payment request not in READY_FOR_APPROVAL status when approving\n'payment_provider_unexpected_error' - unexpected response from payment provider\n'payment_provider_error' - error response from payment provider\n'mandatory_field_missing' - missing mandatory field in payment instrument values\n'payment_request_resume_not_possible' - wrong status or error in resume\n'payment_request_cancel_not_possible' - wrong status or error in cancel\n'payment_request_resume_forbidden' - player attempting to resume other players payment request\n'forbidden_value' - non existing enum sent from frontend\n'route_missing' - no route with active partner payment provider profile\n'route_instrument_mismatch' - payment route and payment instrument have payment instrument template id mismatch\n'disabled_payment_instrument' - disabled payment instrument detected\n'player_mismatch' - payment instrument player and player from context are not the same\n'limits_mismatch' - amount does not adhere to limits\n'limit_config_mismatch' - amount in config does not adhere to limits\n'unique_constraint' - entity may not be created due to its unique constraints\n'fraud_exception' - possible fraud exception\n'pam_initiate_exception' - exception during PAM initiate request\n'confirm_exception' - exception during PAM request confirmation method\n'failure_exception' - exception during PAM request failure method\n'sensitive_data_detected' - sensitive data passed with payment instrument\n'request_status_not_empty' - request status not empty\n'single_use_token_missing' - single use token missing when external vault is used\n'external_vault_expected' - external vault expected to be used\n'payment_request_verify_not_possible' - wrong status or error in verify\n'schedule_cancel_not_possible' - wrong status or error in cancel\n'bad_request_parametars' - wrong parametars received from body or URI",
+      "type": "string",
+      "title": "PredefinedBusinessError"
+    },
+    "RiskAction": {
+      "description": "Risk rules behaviour. Possible values:\n`BLOCK` - payment request is blocked until backoffice user verifies it\n`ALERT_ONLY` - payment request isn't blocked, but risk is flagged",
+      "type": "string",
+      "title": "RiskAction"
+    },
+    "RiskFlag": {
+      "description": "TRI Pay risk flags. Possible values:\n`pending-high` - Withdrawal above threshold\n`pending-negativeNetDeposit` - Player has negative net deposit\n`pending-Chargeback` - Player has pending chargeback\n`pending-Unpaid` - Player has unpaid subs\n`pending-Suspended` - Player is suspended\n`pending-Excluded` - Player is excluded\n`pending-lowPlayRatio` - Player has low play ratio\n`pending-highWithdrawalVelocity` - Player withdrew too much in time interval\n`pending-sharedContactDetails` - Player shares data with another player\n`pending-sharedPaymentInstrument` - Player shares payment instrument with another player\n`pending-paymentInstrumentNameMismatch` - Name on payment instrument and internal name don't match\n`pending-PayPalEmailMismatch` - Email of paypal account and internal email  don't match\n`pending-tooManyActiveCards` - Player has too many active cards\n`pending-FirstWithdrawal` - Player's first withdrawal",
+      "type": "string",
+      "title": "RiskFlag"
+    },
+    "RiskInfo": {
+      "description": "Struct that is the info about one risk.",
+      "type": "object",
+      "title": "RiskInfo",
+      "properties": {
+        "riskDescription": {
+          "description": "risk assessment description",
+          "type": "string"
+        },
+        "riskFlag": {
+          "$ref": "#/definitions/RiskFlag"
+        },
+        "riskScore": {
+          "description": "ris assessment score",
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RiskRule": {
+      "description": "Risk Rule:",
+      "type": "object",
+      "title": "RiskRule",
+      "properties": {
+        "enabled": {
+          "description": "Is risk enabled",
+          "type": "boolean"
+        },
+        "order": {
+          "description": "Order of risk to be processed",
+          "type": "integer",
+          "format": "int64"
+        },
+        "params": {
+          "description": "Additional params of risk, these differ among risks",
+          "type": "object"
+        },
+        "riskAction": {
+          "$ref": "#/definitions/RiskAction"
+        },
+        "riskDescription": {
+          "description": "Full risk description",
+          "type": "string"
+        },
+        "riskFlag": {
+          "$ref": "#/definitions/RiskFlag"
+        },
+        "riskId": {
+          "description": "Risk ID",
+          "type": "string"
+        },
+        "scenarios": {
+          "$ref": "#/definitions/ScenarioSlice"
+        }
+      }
+    },
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ScenarioSlice": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Scenario"
+      }
+    },
+    "Schedule": {
+      "description": "Schedule contains the tasks that should run and retry on failure until the maximum number of executions occur. Next execution delay is calculated as a function of initial delay",
+      "type": "object",
+      "title": "Schedule",
+      "properties": {
+        "config": {
+          "description": "Config contains parameters used upon execution as arguments of the called method",
+          "type": "object"
+        },
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "executionLastAt": {
+          "description": "The time when it was last run",
+          "type": "string",
+          "format": "date-time"
+        },
+        "executionNextAt": {
+          "description": "Next execution time.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "paymentRequestId": {
+          "description": "Payment request that the schedule is referenced. It may be empty for some methods.",
+          "type": "string"
+        },
+        "retryCount": {
+          "description": "Number of attempts",
+          "type": "integer",
+          "format": "int64"
+        },
+        "retryDelayInitialMs": {
+          "description": "The time in milliseconds to wait between the schedule creation and the first run",
+          "type": "integer",
+          "format": "int64"
+        },
+        "retryDelayMaxMs": {
+          "description": "Maximum time in milliseconds between two starts",
+          "type": "integer",
+          "format": "int64"
+        },
+        "retryDelayMinMs": {
+          "description": "Minimum time in milliseconds between two starts",
+          "type": "integer",
+          "format": "int64"
+        },
+        "retryFunction": {
+          "description": "A function based on which the delay between two attempts is calculated depending on the number of attempts. Some functions:\nLINEAR: t(x) = t(x-1) + id * x\nDELAY: t(x) = t(x-1) + id * e^(0.05*x)",
+          "type": "string"
+        },
+        "retryLimit": {
+          "description": "Maximum allowed number of attempts",
+          "type": "integer",
+          "format": "int64"
+        },
+        "scheduleId": {
+          "description": "TRI Pay schedule ID",
+          "type": "string"
+        },
+        "scheduleMethod": {
+          "$ref": "#/definitions/ScheduleMethod"
+        },
+        "scheduleMethodName": {
+          "description": "Schedule method name",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/ScheduleStatus"
+        },
+        "updatedAt": {
+          "description": "System date and time when it has been updated last time",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ScheduleCancelPostRequest": {
+      "description": "ScheduleCancelPostRequest:",
+      "type": "object",
+      "title": "ScheduleCancelPostRequest",
+      "properties": {
+        "ids": {
+          "description": "payment request ids that should be cancelled",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "description": "Cancel reason. It is mandatory.",
+          "type": "string"
+        }
+      }
+    },
+    "ScheduleJournal": {
+      "description": "Schedule Journal contains info about scheduled run",
+      "type": "object",
+      "title": "ScheduleJournal",
+      "properties": {
+        "createdAt": {
+          "description": "System date and time when it has been created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "message": {
+          "description": "Full text info message",
+          "type": "string"
+        },
+        "retryCount": {
+          "description": "Number of the scheduled run that the journal is part of. One schedule may have multiple runs.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "scheduleId": {
+          "description": "Schedule that journal record refers to.",
+          "type": "string"
+        },
+        "scheduleJournalId": {
+          "description": "TRI Pay schedule journal ID",
+          "type": "string"
+        },
+        "scheduleJournalType": {
+          "description": "INFO: Info message; ERROR: Error occurred during schedule run.",
+          "type": "string"
+        }
+      }
+    },
+    "ScheduleMethod": {
+      "description": "ScheduleMethod\nSchedule method type. Possible values:\n`RESUME_PAYMENT_REQUEST` - Resumes the payment request from the current status\n`CANCEL_PAYMENT_REQUEST` - Denies the payment request",
+      "type": "string"
+    },
+    "ScheduleStatus": {
+      "description": "ScheduleStatus\nSchedule status. Possible values:\n`READY` - Task is scheduled and waiting to be executed at next execution time.\n`RUNNING` - Task is running at the moment.\n`CANCELLED` - Schedule has been removed from the execution queue.\n`FAILED` - Scheduled didn't execute schedule run successfully\n`DONE` - Scheduled task has been done",
+      "type": "string"
+    },
+    "SportosEntity": {
+      "description": "TRI Pay database entity name. Possible values:\n'currency'\n'fraud_provider'\n'pam'\n'partner'\n'partner_fraud_provider_profile\"\n'partner_payment_provider_profile'\n'payment_instrument'\n'payment_instrument_template'\n'payment_method'\n'payment_provider'\n'payment_request'\n'payment_route'\n'player'\n'schedule'\n'user'",
+      "type": "string",
+      "title": "SportosEntity"
+    }
+  }
+}

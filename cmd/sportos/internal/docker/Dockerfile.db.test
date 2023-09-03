@@ -1,0 +1,7 @@
+FROM postgres:latest as postgres-sportos-test
+WORKDIR /
+ENV POSTGRES_USER sportos
+ENV POSTGRES_DB sportos
+ENV POSTGRES_PASSWORD secret
+EXPOSE 9920/tcp 5432/tcp
+COPY cmd/sportos/internal/test/*.sql /docker-entrypoint-initdb.d/
