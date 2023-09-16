@@ -1,0 +1,49 @@
+# The manifest for the "backend" service.
+# Read the full specification for the "Load Balanced Web Service" type at:
+#  https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/
+
+# Your service name will be used in naming your resources like log groups, ECS services, etc.
+name: backend
+type: Load Balanced Web Service
+
+# Configuration for your containers and service.
+image:
+  build:
+    dockerfile: Dockerfile
+  # Port exposed through your container to route traffic to it.
+  port: 8080-8082
+
+cpu: 256 # Number of CPU units for the task.
+memory: 512 # Amount of memory in MiB used by the task.
+exec: true # Enable running commands in your container.
+network:
+  connect: true # Enable Service Connect for intra-environment traffic between services.
+
+# storage:
+# readonly_fs: true       # Limit to read-only access to mounted root filesystems.
+
+# Optional fields for more advanced use-cases.
+#
+#variables:                    # Pass environment variables as key value pairs.
+#  LOG_LEVEL: info
+
+#secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
+#  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM parameter.
+
+# You can override any of the values defined above by environment.
+environments:
+  stage:
+    deployment: # The deployment strategy for the "staging" environment.
+      rolling: "default" # Deploy new version before shuting down previous for no downtime.
+    count:
+      range:
+        min: 1
+        max: 2
+        spot_from: 2
+      cpu_percentage: 90
+    # Distribute traffic to your service.
+    http:
+      # Requests to this path will be forwarded to your service.
+      # To match all requests you can use the "/" path.
+      path: "/"
+ 
