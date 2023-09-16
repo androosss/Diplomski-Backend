@@ -25,6 +25,7 @@ func (r PracticeGetHandler) SupportedSubservers() []DR.SubServer {
 
 func (r *PracticeGetHandler) Init(httpReq *http.Request) DA.Error {
 	r.PlayerId = DA.GetParameterFromURLQuery(httpReq, "playerId")
+	r.CoachId = DA.GetParameterFromURLQuery(httpReq, "coachId")
 	r.Sports = DA.ParseCommaSeparated(DA.GetParameterFromURLQuery(httpReq, "sports"))
 	return nil
 }
