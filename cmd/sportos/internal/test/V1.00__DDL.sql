@@ -259,3 +259,6 @@ CREATE TABLE practice (
     constraint fk_practice_coach_id foreign key (coach_id)
     references coach (user_id) match simple
 );
+
+create index place_reviews_index on place (reviews->'average');
+create index coach_reviews_index on coach (reviews->'average');
