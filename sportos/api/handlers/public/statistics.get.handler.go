@@ -37,38 +37,37 @@ func (r *StatisticsGetHandler) Process(ctx context.Context, Repo *crud.Repo) (in
 	if err != nil {
 		return nil, DA.InternalServerError(err)
 	}
-	if player.Statistics == nil {
-		return []DA.Statistics{}, nil
-	}
-	stat := player.Statistics[r.sport]
-	ret := DA.Statistics{
-		WinRatio: fmt.Sprintf("%.2f%%", stat.WinRatio.InexactFloat64()*100),
-	}
-	for _, tournament := range stat.Tournaments {
-		singleApiTournament := DA.Tournament{
-			Tournament: tournament.Tournament,
-			Ranking:    tournament.Ranking,
+	ret := DA.Statistics{}
+	if stat, ok := player.Statistics[r.sport]; ok {
+		ret = DA.Statistics{
+			WinRatio: fmt.Sprintf("%.2f%%", stat.WinRatio.InexactFloat64()*100),
 		}
-		for _, playerId := range tournament.MyTeam {
-			player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
-			singleApiTournament.MyTeam = append(singleApiTournament.MyTeam, player.Name)
+		for _, tournament := range stat.Tournaments {
+			singleApiTournament := DA.Tournament{
+				Tournament: tournament.Tournament,
+				Ranking:    tournament.Ranking,
+			}
+			for _, playerId := range tournament.MyTeam {
+				player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
+				singleApiTournament.MyTeam = append(singleApiTournament.MyTeam, player.Name)
+			}
+			ret.Tournaments = append(ret.Tournaments, singleApiTournament)
 		}
-		ret.Tournaments = append(ret.Tournaments, singleApiTournament)
-	}
-	for _, singleStat := range stat.Matches {
-		singleApiStat := DA.Statistic{
-			Date:  singleStat.Date,
-			Score: singleStat.Score,
+		for _, singleStat := range stat.Matches {
+			singleApiStat := DA.Statistic{
+				Date:  singleStat.Date,
+				Score: singleStat.Score,
+			}
+			for _, playerId := range singleStat.MyTeam {
+				player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
+				singleApiStat.MyTeam = append(singleApiStat.MyTeam, player.Name)
+			}
+			for _, playerId := range singleStat.OppTeam {
+				player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
+				singleApiStat.OppTeam = append(singleApiStat.OppTeam, player.Name)
+			}
+			ret.Matches = append(ret.Matches, singleApiStat)
 		}
-		for _, playerId := range singleStat.MyTeam {
-			player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
-			singleApiStat.MyTeam = append(singleApiStat.MyTeam, player.Name)
-		}
-		for _, playerId := range singleStat.OppTeam {
-			player, _ := Repo.PlayerCrud.GetById(ctx, playerId, nil)
-			singleApiStat.OppTeam = append(singleApiStat.OppTeam, player.Name)
-		}
-		ret.Matches = append(ret.Matches, singleApiStat)
 	}
 	resMap := make(map[string]interface{})
 	resMap["body"] = ret

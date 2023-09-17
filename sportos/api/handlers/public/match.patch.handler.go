@@ -138,13 +138,18 @@ func updateStats(ctx context.Context, Repo *crud.Repo, id, result string) error 
 		if stats == nil {
 			stats = DR.StatMap{}
 		}
+		teamResult := result
+		if winner != 0 {
+			loseResults := strings.Split(result, ":")
+			teamResult = loseResults[1] + ":" + loseResults[0]
+		}
 		nrOfMatches := float64(len(stats[match.Sport].Matches))
 		winRation := stats[match.Sport].WinRatio.Mul(decimal.NewFromFloat(nrOfMatches)).Add(decimal.NewFromFloat(1)).Div(decimal.NewFromFloat(nrOfMatches + 1))
 		stats[match.Sport] = DR.Statistics{
 			WinRatio: winRation,
 			Matches: append(stats[match.Sport].Matches, DR.Statistic{
 				Date:    *match.StartTime,
-				Score:   result,
+				Score:   teamResult,
 				MyTeam:  strings.Split(match.Teams[winner], ","),
 				OppTeam: strings.Split(match.Teams[1-winner], ","),
 			}),
@@ -167,14 +172,18 @@ func updateStats(ctx context.Context, Repo *crud.Repo, id, result string) error 
 		if stats == nil {
 			stats = DR.StatMap{}
 		}
-		loseResults := strings.Split(result, ":")
+		teamResult := result
+		if winner != 1 {
+			loseResults := strings.Split(result, ":")
+			teamResult = loseResults[1] + ":" + loseResults[0]
+		}
 		nrOfMatches := float64(len(stats[match.Sport].Matches))
 		winRation := stats[match.Sport].WinRatio.Mul(decimal.NewFromFloat(nrOfMatches)).Div(decimal.NewFromFloat(nrOfMatches + 1))
 		stats[match.Sport] = DR.Statistics{
 			WinRatio: winRation,
 			Matches: append(stats[match.Sport].Matches, DR.Statistic{
 				Date:    *match.StartTime,
-				Score:   loseResults[1] + ":" + loseResults[0],
+				Score:   teamResult,
 				MyTeam:  strings.Split(match.Teams[1-winner], ","),
 				OppTeam: strings.Split(match.Teams[winner], ","),
 			}),
